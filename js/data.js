@@ -39,3 +39,32 @@ const surveyData = [
     ]
   }
 ]
+
+// js/app.js(第一部分)
+document.addEventListener('DOMContentLoaded', () => {
+  // 模块一：单页面应用(SPA)路由切换控制
+  const navItems = document.querySelectorAll('.nav-item')
+  const viewSections = document.querySelectorAll('.view-section')
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      // 1.移除所有导航菜单的激活状态
+      navItems.forEach(nav => nav.classList.remove('active'))
+      // 2.将选中的菜单项设为激活
+      item.classList.add('active')
+
+      // 3.隐藏所有视图区域
+      viewSections.forEach(view => view.computedStyleMap.display = 'none')
+
+      // 4.显示当前点击对应的目标视图
+      const targetId = item.getAttribute('data-target')
+      const targetView = document.getElementById(targetId)
+      targetView.style.display = 'block'
+
+      // 联动：如果切换到图表页，且问卷已经做完，则触发重新渲染图表，防止 Canvas 变形
+      if (targetId === 'dashboard-view' && currentQuestionIndex >= surveyData.length) {
+        drawChart()
+      }
+    })
+  })
+})
