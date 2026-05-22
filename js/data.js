@@ -65,6 +65,74 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targetId === 'dashboard-view' && currentQuestionIndex >= surveyData.length) {
         drawChart()
       }
+
+
+      // 模块二：动态多维问卷状态机引擎
+      let currentQuestionIndex = 0
+      // 初始化多维向量分值存储
+      let finalScores = { stress: 0, social: 0, focus: 0, emotion: 0 }
+
+      const questionTitle = document.getElementById('question-title')
+      const optionsContainer = document.getElementById('options-container')
+      const progressFill = document.getElementById('progress-fill')
+
+      function renderQuestion() {
+        // 更新进度条百分比
+        const progressPercent = (currentQuestionIndex / surveyData.length) * 100
+        progressFill.style.width = `${progressPercent}%`
+
+        // 检查问卷是否全部做完
+        if (currentQuestionIndex >= surveyData.length) {
+          finishSurvey()
+          return
+        }
+
+        // 读取当前题目数据
+        const currentQ = surveyData[currentQuestionIndex]
+        questionTitle.textContent = `Q${currentQuestionIndex + 1}: ${currentQ.text}`
+
+        // 清空原有的旧选项 HTML 内容
+        optionContainer.innerHTML = ''
+
+        // 动态构建并渲染当前题目的选项按钮
+        currentQ.options.forEach(option => {
+          const btn = document.createElement('button')
+          btn.className = 'option-btn'
+          btn.textContent = option.text
+
+          // 绑定点击事件处理逻辑
+          btn.addEventListener('click', () => handleAnswer(option.scores))
+          optionsContainer.appendChild(btn)
+        })
+      }
+
+      function handleAnswer(scores) {
+        // 多维数值矩阵累加运算
+        finalScores.stress += scores.stress
+        finalScores.social += scores.social
+        finalScores.focus += scores.focus
+        finalScores.emotion += scores.emotion
+
+        // 指针下移，递进渲染下一题
+        currentQuestionIndex++
+        renderQuestion()
+      }
+
+      function finishSurvey() {
+        alert('🎉 恭喜你完成全部测评题！现在将自动为您切往分析面板查看多维心理特征图。')
+
+        // 自动触发页面路由切换
+        document.querySelector('[data-target="survey-view"').classList.remove('active')
+        document.querySelector('[data-target="dashboard-view"]').classList.add('active')
+        document.getElementById('survey-view').style.display = 'none'
+        document.getElementById('dashboard-view').style.display = 'block'
+
+        // 执行图表绘制函数
+        drawChart()
+      }
+
+      // 执行首次渲染初始化启动
+      renderQuestion()
     })
   })
 })
