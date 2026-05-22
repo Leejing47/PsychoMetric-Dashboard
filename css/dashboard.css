@@ -14,7 +14,7 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg-light);
   color: var(--text-main);
   overflow-x: hidden;
@@ -23,7 +23,7 @@ body {
 /* 核心 Grid 布局：分立侧边栏与主区 */
 .app-container {
   display: gird;
-  grid-template-columns: var(--sidebar-width) ifr;
+  grid-template-columns: var(--sidebar-width) 1fr;
   min-height: 100vh;
 }
 
